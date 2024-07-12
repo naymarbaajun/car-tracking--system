@@ -6,11 +6,12 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 import json
-from  main.models import CustomUser, Staffs, Courses, Students, Attendance, AttendanceReport,FeedBackStudent, Location
+from  main.models import CustomUser, Staffs, Courses, Students, Location
 from .forms import AddStudentForm, EditStudentForm
 import re
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
+
 
 
 
@@ -69,6 +70,9 @@ def admin_home(request):
         "student_name_list": student_name_list,
     }
     return render(request, "hod_template/home_content.html", context)
+
+
+
 
 
 def add_staff(request):

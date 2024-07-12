@@ -5,7 +5,7 @@
       <a href="{% url 'admin_home' %}" class="brand-link">
         <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
-        <span class="brand-text font-weight-light">Mtanga School</span>
+        <span class="brand-text font-weight-light">CarBlack Box</span>
       </a>
 
       <!-- Sidebar -->
@@ -36,7 +36,7 @@
               </a>
             </li>
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               {% url 'manage_staff' as manage_staff %}
               {% url 'edit_staff' staff_id=id as edit_staff %}
               <a href="{{ manage_staff }}" class="nav-link {% if request.path == manage_staff %} active {% endif %} {% if request.path == edit_staff %} active {% endif %}">
@@ -55,7 +55,7 @@
                   Add Staff
                 </p>
               </a>
-            </li>
+            </li> -->
 
             <li class="nav-item">
               {% url 'manage_student' as manage_student %}
@@ -106,7 +106,7 @@
               <a href="{{ manage_location }}" class="nav-link {% if request.path == manage_location %} active {% endif %} {% if request.path == edit_location %} active {% endif %}">
                   <i class="nav-icon fas fa-map-marker-alt"></i>
                   <p>
-                      Manage Location
+                      Manage Car Location
                   </p>
               </a>
           </li>
@@ -116,7 +116,7 @@
               <a href="{{ add_location }}" class="nav-link {% if request.path == add_location %} active {% endif %}">
                   <i class="nav-icon fas fa-map-marker-alt"></i>
                   <p>
-                      Add Location
+                      Add  Car Location
                   </p>
               </a>
           </li>
@@ -133,25 +133,6 @@
 
            
 
-            <li class="nav-item">
-              {% url 'admin_view_attendance' as admin_view_attendance %}
-              <a href="{{ admin_view_attendance }}" class="nav-link {% if request.path == admin_view_attendance %} active {% endif %}">
-                <i class="nav-icon fas fa-calendar-alt"></i>
-                <p>
-                  View Attendance
-                </p>
-              </a>
-            </li>
-
-            <li class="nav-item">
-              {% url 'student_feedback_message' as student_feedback_message %}
-              <a href="{{ student_feedback_message }}" class="nav-link {% if request.path == student_feedback_message %} active {% endif %}">
-                <i class="nav-icon fas fa-th"></i>
-                <p>
-                  Student Feedback
-                </p>
-              </a>
-            </li>
 
 
          

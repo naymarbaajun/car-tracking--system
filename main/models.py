@@ -39,29 +39,6 @@ class Students(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class Attendance(models.Model):
-    id = models.AutoField(primary_key=True)
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE, null=True)
-    attendance_date = models.DateField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-class AttendanceReport(models.Model):
-    id = models.AutoField(primary_key=True)
-    student = models.ForeignKey(Students, on_delete=models.CASCADE)
-    attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE)
-    status = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-class FeedBackStudent(models.Model):
-    id = models.AutoField(primary_key=True)
-    student_id = models.ForeignKey(Students, on_delete=models.CASCADE)
-    feedback = models.TextField()
-    feedback_reply = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    objects = models.Manager()
 
 class Location(models.Model):
     id = models.AutoField(primary_key=True)

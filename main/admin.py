@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, AdminHOD, Staffs, Courses,  Students, Location
+from .models import *
 
 # Register your models here.
 class UserModel(UserAdmin):
@@ -9,8 +9,7 @@ class UserModel(UserAdmin):
 
 admin.site.register(CustomUser, UserModel)
 admin.site.register(AdminHOD)
-admin.site.register(Staffs)
-admin.site.register(Courses)
-admin.site.register(Students)
+admin.site.register(Cars)
+admin.site.register(Owners)
 admin.site.register(Location)
 

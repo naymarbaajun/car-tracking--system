@@ -1,23 +1,26 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Add Location
+    Edit Car | #ID: {{ car.id }}
 {% endblock page_title %}
 
 {% block main_content %}
 
+{% load static %}
+
 <section class="content">
     <div class="container-fluid">
+
         <div class="row">
             <div class="col-md-12">
                 <!-- general form elements -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Add Location</h3>
+                        <h3 class="card-title">Edit Car</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form role="form" method="POST" action="{% url 'add_location_save' %}">
+                    <form role="form" method="POST" action="{% url 'edit_car_save' %}" enctype="multipart/form-data">
                         {% csrf_token %}
 
                         <!-- Display Messages -->
@@ -47,42 +50,60 @@
 
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="latitude">Latitude</label>
-                                <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Enter Latitude (e.g., 6.7714° S)" required>
+                                <label for="car_name">Car Name</label>
+                                <input type="text" class="form-control" id="car_name" name="car" value="{{ car.car_name }}" required>
+                                <input type="hidden" name="car_id" value="{{ car.id }}">
                             </div>
-                            <div class="form-group">
-                                <label for="longitude">Longitude</label>
-                                <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Enter Longitude (e.g., 39.2083° E)" required>
-                            </div>
+
                             <div class="form-group">
                                 <label for="owner">Owner</label>
                                 <select class="form-control" id="owner" name="owner" required>
                                     <option value="" selected disabled>Select Owner</option>
-                                    {% for owner_id, owner_username in owner_list %}
-                                        <option value="{{ owner_id }}">{{ owner_username }}</option>
+                                    {% for owner in owner_list %}
+                                        <option value="{{ owner.id }}" {% if owner.id == car.owner.id %} selected {% endif %}>{{ owner.admin.username }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
+
                             <div class="form-group">
-                                <label for="car">Car</label>
-                                <select class="form-control" id="car" name="car" required>
-                                    <option value="" selected disabled>Select Car</option>
-                                    {% for car_id, car_name in car_list %}
-                                        <option value="{{ car_id }}">{{ car_name }}</option>
-                                    {% endfor %}
-                                </select>
+                                <label for="car_type">Car Type</label>
+                                <input type="text" class="form-control" id="car_type" name="car_type" value="{{ car.car_type }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="registration_number">Registration Number</label>
+                                <input type="text" class="form-control" id="registration_number" name="registration_number" value="{{ car.registration_number }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="manufacturing_year">Manufacturing Year</label>
+                                <input type="number" class="form-control" id="manufacturing_year" name="manufacturing_year" value="{{ car.manufacturing_year }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="purchase_date">Purchase Date</label>
+                                <input type="date" class="form-control" id="purchase_date" name="purchase_date" value="{{ car.purchase_date|date:'Y-m-d' }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="car_image">Car Image</label>
+                                <input type="file" class="form-control-file" id="car_image" name="car_image" accept="image/*">
+                                {% if car.car_image %}
+                                    <img src="{{ car.car_image.url }}" alt="Car Image" class="img-thumbnail mt-2" style="max-width: 200px;">
+                                {% endif %}
                             </div>
                         </div>
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Add Location</button>
+                            <button type="submit" class="btn btn-primary">Update Car</button>
                         </div>
                     </form>
                 </div>
                 <!-- /.card -->
             </div>
         </div>
+
     </div><!-- /.container-fluid -->
 </section>
 

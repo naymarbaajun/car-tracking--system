@@ -57,7 +57,7 @@
                                     <th>ID</th>
                                     <th>Latitude</th>
                                     <th>Longitude</th>
-                                    <th>Student</th>
+                                    <th>Owner</th>
                                     <th>Timestamp</th>
                                     <th>Action</th>
                                 </tr>
@@ -68,7 +68,7 @@
                                     <td>{{ location.id }}</td>
                                     <td>{{ location.latitude }}</td>
                                     <td>{{ location.longitude }}</td>
-                                    <td>{{ location.student.admin.username }}</td>
+                                    <td>{{ location.owner.admin.username }}</td>
                                     <td>{{ location.timestamp }}</td>
                                     <td>
                                         <a href="{% url 'edit_location' location.id %}" class="btn btn-success">Edit</a> 

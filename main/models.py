@@ -11,21 +11,18 @@ class AdminHOD(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class Staffs(models.Model):
+
+
+class Cars(models.Model):
     id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    address = models.TextField()
+    car_name = models.CharField(max_length=255)
+    car_color = models.CharField(max_length=255)
+    car_model = models.CharField(max_length=255)
+    year = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class Courses(models.Model):
-    id = models.AutoField(primary_key=True)
-    course_name = models.CharField(max_length=255)
-    staff = models.ForeignKey(Staffs, on_delete=models.CASCADE, default=1)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-class Students(models.Model):
+class Owners(models.Model):
     GENDER_CHOICES = [
         ('Male', 'Male'),
         ('Female', 'Female'),
@@ -33,16 +30,18 @@ class Students(models.Model):
     id = models.AutoField(primary_key=True)
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
-    profile_pic = models.FileField()
+    phone_number = models.CharField(max_length=12)
     address = models.TextField()
-    course = models.ForeignKey(Courses, on_delete=models.DO_NOTHING, default=1)
+    car = models.ForeignKey(Cars, on_delete=models.DO_NOTHING, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
+
+
 class Location(models.Model):
-    id = models.AutoField(primary_key=True)
-    latitude = models.CharField(max_length=20)  # Increased max_length to accommodate characters
-    longitude = models.CharField(max_length=20)  # Increased max_length to accommodate characters
-    student = models.ForeignKey(Students, on_delete=models.CASCADE, related_name='locations')
-    timestamp = models.DateTimeField(default=timezone.now)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)  # Set default value here
+    timestamp = models.DateTimeField(auto_now_add=True)
+    car = models.ForeignKey(Cars, on_delete=models.CASCADE, default=1)

@@ -5,71 +5,54 @@
 {% load static %}
 
 <section class="content">
-        <div class="container-fluid">
-          <!-- Small boxes (Stat box) -->
-          <div class="row">
+    <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
             <div class="col-lg-4 col-6">
-              <!-- small box -->
-              <div class="small-box bg-info">
-                <div class="inner">
-                  <h3>{{ all_student_count }}</h3>
-
-                  <p>Total Car Owners</p>
+                <!-- small box -->
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>{{ all_owner_count }}</h3>
+                        <p>Total Car Owners</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="{% url 'manage_owner' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
-                <div class="icon">
-                  <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href="{% url 'manage_student' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
             </div>
             <!-- ./col -->
             <div class="col-lg-4 col-6">
-              <!-- small box -->
-              <div class="small-box bg-danger">
-                <div class="inner">
-                  <h3>{{ staff_count }}</h3>
-
-                  <p>Total Car Locations</p>
+                <!-- small box -->
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>{{ location_count }}</h3>
+                        <p>Total Car Locations</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="{% url 'manage_location' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
-                <div class="icon">
-                  <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href="{% url 'manage_staff' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
             </div>
             <!-- ./col -->
-            
             <div class="col-lg-4 col-6">
-              <!-- small box -->
-              <div class="small-box bg-warning">
-                <div class="inner">
-                  <h3>{{ course_count }}</h3>
-
-                  <p>Total Cars</p>
+                <!-- small box -->
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>{{ car_count }}</h3>
+                        <p>Total Cars</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="{% url 'manage_car' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
-                <div class="icon">
-                  <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href="{% url 'manage_course' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
             </div>
             <!-- ./col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
 
-      
-            <!-- ./col -->
-            
-          </div>
-          <!-- /.row -->
-          
-
-       
-
-       
-
-
-        </div><!-- /.container-fluid -->
-      </section>
-
-  {% endblock main_content %}
-
-  
+{% endblock main_content %}

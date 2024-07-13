@@ -20,7 +20,7 @@
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form role="form" method="POST" action="{% url 'edit_car_save' %}" enctype="multipart/form-data">
+                    <form role="form" method="POST" action="{% url 'edit_car' %}" enctype="multipart/form-data">
                         {% csrf_token %}
 
                         <!-- Display Messages -->
@@ -51,7 +51,7 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="car_name">Car Name</label>
-                                <input type="text" class="form-control" id="car_name" name="car" value="{{ car.car_name }}" required>
+                                <input type="text" class="form-control" id="car_name" name="car_name" value="{{ car.car_name }}" required>
                                 <input type="hidden" name="car_id" value="{{ car.id }}">
                             </div>
 
@@ -59,7 +59,7 @@
                                 <label for="owner">Owner</label>
                                 <select class="form-control" id="owner" name="owner" required>
                                     <option value="" selected disabled>Select Owner</option>
-                                    {% for owner in owner_list %}
+                                    {% for owner in owners %}
                                         <option value="{{ owner.id }}" {% if owner.id == car.owner.id %} selected {% endif %}>{{ owner.admin.username }}</option>
                                     {% endfor %}
                                 </select>

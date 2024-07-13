@@ -11,7 +11,7 @@
     <div class="container-fluid">
 
         <a class="btn btn-primary" href="{% url 'add_owner' %}" role="button">+ Add Owner</a> <br/>&nbsp;
-        
+
         {% if messages %}
         <div class="form-group">
             <div class="col-12">
@@ -59,11 +59,12 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Email</th>
                                     <th>First Name</th>
                                     <th>Last Name</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
                                     <th>Phone Number</th>
+                                    <th>Address</th>
+                                    <th>Picture</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th>Action</th>
@@ -72,17 +73,24 @@
                             <tbody>
                                 {% for owner in owners %}
                                 <tr>
-                                    <td>{{ owner.user.id }}</td>
-                                    <td>{{ owner.user.first_name }}</td>
-                                    <td>{{ owner.user.last_name }}</td>
-                                    <td>{{ owner.user.username }}</td>
-                                    <td>{{ owner.user.email }}</td>
+                                    <td>{{ owner.id }}</td>
+                                    <td>{{ owner.email }}</td>
+                                    <td>{{ owner.first_name }}</td>
+                                    <td>{{ owner.last_name }}</td>
                                     <td>{{ owner.phone_number }}</td>
+                                    <td>{{ owner.address }}</td>
+                                    <td>
+                                        {% if owner.owner_picture %}
+                                            <img src="{{ owner.owner_picture.url }}" alt="Owner Picture" style="max-width: 100px; max-height: 100px;">
+                                        {% else %}
+                                            No Picture Available
+                                        {% endif %}
+                                    </td>
                                     <td>{{ owner.created_at }}</td>
                                     <td>{{ owner.updated_at }}</td>
                                     <td>
-                                        <a href="{% url 'edit_owner' owner.user.id %}" class="btn btn-success">Edit</a> 
-                                        <a href="{% url 'delete_owner' owner.user.id %}" class="btn btn-danger">Delete</a>
+                                        <a href="{% url 'edit_owner' owner.id %}" class="btn btn-success">Edit</a> 
+                                        <a href="{% url 'delete_owner' owner.id %}" class="btn btn-danger">Delete</a>
                                     </td>
                                 </tr>
                                 {% endfor %}

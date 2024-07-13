@@ -11,11 +11,14 @@ from .forms import AddOwnerForm, EditOwnerForm
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 
+
 def admin_home(request):
+    # Counting objects
     all_owner_count = Owners.objects.all().count()
     car_count = Cars.objects.all().count()
+    location_count = Location.objects.all().count()
 
-    # Total Cars and owners in Each Car
+    # Getting car details
     car_all = Cars.objects.all()
     car_name_list = []
     owner_count_list_in_car = []
@@ -25,24 +28,25 @@ def admin_home(request):
         car_name_list.append(car.car_name)
         owner_count_list_in_car.append(owners)
     
+    # Getting owner details
     owner_name_list = []
-
     owners = Owners.objects.all()
     for owner in owners:
         owner_name_list.append(owner.first_name)
     
+    # Getting locations
     locations = Location.objects.all()
 
     context = {
         "all_owner_count": all_owner_count,
         "car_count": car_count,
+        "location_count": location_count,
         "car_name_list": car_name_list,
         "owner_count_list_in_car": owner_count_list_in_car,
         "owner_name_list": owner_name_list,
         "locations": locations,
     }
     return render(request, "hod_template/home_content.html", context)
-
 def add_car(request):
     if request.method == "POST":
         car_name = request.POST.get('car_name')

@@ -22,27 +22,27 @@
 
                         <!-- Display Messages -->
                         {% if messages %}
-                        <div class="form-group">
-                            <div class="col-12">
-                                {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                            {{ message }}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                            {{ message }}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
+                            <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                        {% if message.tags == "error" %}
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                                {{ message }}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        {% elif message.tags == "success" %}
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                                {{ message }}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
                             </div>
-                        </div>
                         {% endif %}
 
                         <div class="card-body">
@@ -58,8 +58,8 @@
                                 <label for="owner">Owner</label>
                                 <select class="form-control" id="owner" name="owner" required>
                                     <option value="" selected disabled>Select Owner</option>
-                                    {% for owner_id, owner_username in owner_list %}
-                                        <option value="{{ owner_id }}">{{ owner_username }}</option>
+                                    {% for owner in owner_list %}
+                                        <option value="{{ owner.id }}">{{ owner.username }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -67,8 +67,8 @@
                                 <label for="car">Car</label>
                                 <select class="form-control" id="car" name="car" required>
                                     <option value="" selected disabled>Select Car</option>
-                                    {% for car_id, car_name in car_list %}
-                                        <option value="{{ car_id }}">{{ car_name }}</option>
+                                    {% for car in car_list %}
+                                        <option value="{{ car.id }}">{{ car.car_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>

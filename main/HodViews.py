@@ -29,7 +29,7 @@ def admin_home(request):
 
     owners = Owners.objects.all()
     for owner in owners:
-        owner_name_list.append(owner.admin.first_name)
+        owner_name_list.append(owner.first_name)
     
     locations = Location.objects.all()
 

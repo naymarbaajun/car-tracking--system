@@ -50,24 +50,38 @@ def admin_home(request):
     return render(request, "hod_template/home_content.html", context)
 
 
+
 def add_car(request):
     if request.method == "POST":
         car_name = request.POST.get('car_name')
         car_color = request.POST.get('car_color')
         car_model = request.POST.get('car_model')
         year = request.POST.get('year')
+        owner_id = request.POST.get('owner')  # Fetch owner ID from form
 
         try:
-            car_model = Cars(car_name=car_name, car_color=car_color, car_model=car_model, year=year)
+            # Retrieve the owner object using the owner_id
+            owner = Owners.objects.get(id=owner_id)
+            
+            # Create a new Cars object with owner assigned
+            car_model = Cars(car_name=car_name, car_color=car_color, car_model=car_model, year=year, owner=owner)
             car_model.save()
+            
             messages.success(request, "Car Added Successfully!")
             return redirect('add_car')
+        except Owners.DoesNotExist:
+            messages.error(request, "Owner not found.")
         except Exception as e:
             messages.error(request, f"Failed to Add Car! Error: {str(e)}")
-            return redirect('add_car')
+        
+        return redirect('add_car')
     else:
-        return render(request, "hod_template/add_car_template.html", {})
-    
+        owners = Owners.objects.all()  # Fetch all owners to populate the select dropdown
+        context = {
+            'owners': owners,
+        }
+        return render(request, "hod_template/add_car_template.html", context)
+
 
 def manage_car(request):
     cars = Cars.objects.all()

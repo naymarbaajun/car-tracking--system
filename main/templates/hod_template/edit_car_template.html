@@ -56,6 +56,21 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="car_color">Car Color</label>
+                                <input type="text" class="form-control" id="car_color" name="car_color" value="{{ car.car_color }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="car_model">Car Model</label>
+                                <input type="text" class="form-control" id="car_model" name="car_model" value="{{ car.car_model }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="year">Year</label>
+                                <input type="text" class="form-control" id="year" name="year" value="{{ car.year }}" required>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="owner">Owner</label>
                                 <select class="form-control" id="owner" name="owner" required>
                                     <option value="" selected disabled>Select Owner</option>
@@ -66,31 +81,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="car_type">Car Type</label>
-                                <input type="text" class="form-control" id="car_type" name="car_type" value="{{ car.car_type }}" required>
+                                <label for="created_at">Created At</label>
+                                <input type="text" class="form-control" id="created_at" name="created_at" value="{{ car.created_at }}" readonly>
                             </div>
 
                             <div class="form-group">
-                                <label for="registration_number">Registration Number</label>
-                                <input type="text" class="form-control" id="registration_number" name="registration_number" value="{{ car.registration_number }}" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="manufacturing_year">Manufacturing Year</label>
-                                <input type="number" class="form-control" id="manufacturing_year" name="manufacturing_year" value="{{ car.manufacturing_year }}" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="purchase_date">Purchase Date</label>
-                                <input type="date" class="form-control" id="purchase_date" name="purchase_date" value="{{ car.purchase_date|date:'Y-m-d' }}" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="car_image">Car Image</label>
-                                <input type="file" class="form-control-file" id="car_image" name="car_image" accept="image/*">
-                                {% if car.car_image %}
-                                    <img src="{{ car.car_image.url }}" alt="Car Image" class="img-thumbnail mt-2" style="max-width: 200px;">
-                                {% endif %}
+                                <label for="updated_at">Updated At</label>
+                                <input type="text" class="form-control" id="updated_at" name="updated_at" value="{{ car.updated_at }}" readonly>
                             </div>
                         </div>
                         <!-- /.card-body -->

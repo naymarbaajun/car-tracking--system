@@ -11,5 +11,5 @@ admin.site.register(CustomUser, UserModel)
 admin.site.register(AdminHOD)
 admin.site.register(Cars)
 admin.site.register(Owners)
-admin.site.register(Location)
+admin.site.register(CarboxDetail)
 

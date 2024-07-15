@@ -19,7 +19,7 @@ class AddOwnerForm(forms.ModelForm):
             'gender', 
             'phone_number', 
             'address', 
-            'owner_picture', 
+   
         
         ]
         widgets = {
@@ -29,7 +29,7 @@ class AddOwnerForm(forms.ModelForm):
             'gender': forms.Select(choices=GENDER_CHOICES, attrs={"class":"form-control"}),
             'phone_number': forms.TextInput(attrs={"class":"form-control"}),
             'address': forms.TextInput(attrs={"class":"form-control"}),
-            'owner_picture': forms.FileInput(attrs={"class":"form-control"}),
+          
          
         }
 
@@ -43,7 +43,7 @@ class EditOwnerForm(forms.ModelForm):
             'gender', 
             'phone_number', 
             'address', 
-            'owner_picture', 
+  
  
         ]
         widgets = {
@@ -53,6 +53,6 @@ class EditOwnerForm(forms.ModelForm):
             'gender': forms.Select(choices=GENDER_CHOICES, attrs={"class": "form-control"}),
             'phone_number': forms.TextInput(attrs={"class": "form-control"}),
             'address': forms.TextInput(attrs={"class": "form-control"}),
-            'owner_picture': forms.FileInput(attrs={"class": "form-control"}),
+      
        
         }

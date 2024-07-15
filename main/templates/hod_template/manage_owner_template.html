@@ -64,7 +64,7 @@
                                     <th>Last Name</th>
                                     <th>Phone Number</th>
                                     <th>Address</th>
-                                    <th>Picture</th>
+                                
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th>Action</th>
@@ -79,13 +79,7 @@
                                     <td>{{ owner.last_name }}</td>
                                     <td>{{ owner.phone_number }}</td>
                                     <td>{{ owner.address }}</td>
-                                    <td>
-                                        {% if owner.owner_picture %}
-                                            <img src="{{ owner.owner_picture.url }}" alt="Owner Picture" style="max-width: 100px; max-height: 100px;">
-                                        {% else %}
-                                            No Picture Available
-                                        {% endif %}
-                                    </td>
+                                
                                     <td>{{ owner.created_at }}</td>
                                     <td>{{ owner.updated_at }}</td>
                                     <td>

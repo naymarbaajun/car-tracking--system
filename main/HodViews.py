@@ -6,17 +6,18 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 import json
-from .models import CustomUser, AdminHOD, Cars, Owners, Location
+from .models import CustomUser, AdminHOD, Cars, Owners, CarboxDetail
 from .forms import AddOwnerForm, EditOwnerForm
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
+from django.contrib.auth import get_user_model 
 
 
 def admin_home(request):
     # Counting objects
     all_owner_count = Owners.objects.all().count()
     car_count = Cars.objects.all().count()
-    location_count = Location.objects.all().count()
+    carbox_detail_count = CarboxDetail.objects.all().count()
 
     # Getting car details
     car_all = Cars.objects.all()
@@ -34,19 +35,21 @@ def admin_home(request):
     for owner in owners:
         owner_name_list.append(owner.first_name)
     
-    # Getting locations
-    locations = Location.objects.all()
+    # Getting carbox details
+    carbox_details = CarboxDetail.objects.all()
 
     context = {
         "all_owner_count": all_owner_count,
         "car_count": car_count,
-        "location_count": location_count,
+        "carbox_detail_count": carbox_detail_count,
         "car_name_list": car_name_list,
         "owner_count_list_in_car": owner_count_list_in_car,
         "owner_name_list": owner_name_list,
-        "locations": locations,
+        "carbox_details": carbox_details,
     }
     return render(request, "hod_template/home_content.html", context)
+
+
 def add_car(request):
     if request.method == "POST":
         car_name = request.POST.get('car_name')
@@ -113,11 +116,6 @@ def delete_car(request, car_id):
     return redirect('manage_car')
 
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.core.files.storage import FileSystemStorage
-from main.models import Owners, Cars
-from .forms import AddOwnerForm
 
 def add_owner(request):
     form = AddOwnerForm()
@@ -132,45 +130,15 @@ def add_owner_save(request):
         messages.error(request, "Invalid Method")
         return redirect('add_owner')
     else:
-        form = AddOwnerForm(request.POST, request.FILES)
+        form = AddOwnerForm(request.POST)
 
         if form.is_valid():
-            email = form.cleaned_data['email']
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            gender = form.cleaned_data['gender']
-            phone_number = form.cleaned_data['phone_number']
-            address = form.cleaned_data['address']
-
-            if 'owner_picture' in request.FILES:
-                owner_picture = request.FILES['owner_picture']
-                fs = FileSystemStorage()
-                filename = fs.save(owner_picture.name, owner_picture)
-                owner_picture_url = fs.url(filename)
-            else:
-                owner_picture_url = form.cleaned_data['owner_picture']  # Use default value if not provided
-
-            try:
-                owner_model = Owners(
-                    email=email,
-                    first_name=first_name,
-                    last_name=last_name,
-                    gender=gender,
-                    phone_number=phone_number,
-                    address=address,
-                    owner_picture=owner_picture_url
-                )
-                owner_model.save()
-
-                messages.success(request, "Owner Added Successfully!")
-                return redirect('add_owner')
-            except Exception as e:
-                messages.error(request, f"Failed to Add Owner: {e}")
-                return redirect('add_owner')
+            form.save()
+            messages.success(request, "Owner Added Successfully!")
+            return redirect('add_owner')
         else:
             messages.error(request, "Form is not valid")
             return redirect('add_owner')
-
 
 def manage_owner(request):
     owners = Owners.objects.all()
@@ -180,18 +148,9 @@ def manage_owner(request):
     return render(request, 'hod_template/manage_owner_template.html', context)
 
 def edit_owner(request, owner_id):
-    request.session['owner_id'] = owner_id
     owner = get_object_or_404(Owners, id=owner_id)
 
-    form = EditOwnerForm(initial={
-        'email': owner.email,
-        'first_name': owner.first_name,
-        'last_name': owner.last_name,
-        'address': owner.address,
-        'gender': owner.gender,
-        'phone_number': owner.phone_number,
-        'owner_picture': owner.owner_picture,
-    })
+    form = EditOwnerForm(instance=owner)
 
     context = {
         'id': owner_id,
@@ -204,49 +163,21 @@ def edit_owner_save(request):
     if request.method != "POST":
         return HttpResponse("Invalid Method!")
     else:
-        owner_id = request.session.get('owner_id')
+        owner_id = request.POST.get('owner_id')
         if not owner_id:
             return redirect('/manage_owner')
 
-        form = EditOwnerForm(request.POST, request.FILES)
+        owner = get_object_or_404(Owners, id=owner_id)
+        form = EditOwnerForm(request.POST, instance=owner)
+
         if form.is_valid():
-            email = form.cleaned_data['email']
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            address = form.cleaned_data['address']
-            phone_number = form.cleaned_data['phone_number']
-            gender = form.cleaned_data['gender']
-
-            try:
-                if 'owner_picture' in request.FILES:
-                    owner_picture = request.FILES['owner_picture']
-                    fs = FileSystemStorage()
-                    filename = fs.save(owner_picture.name, owner_picture)
-                    owner_picture_url = fs.url(filename)
-                else:
-                    owner_picture_url = None
-
-                owner_model = Owners.objects.get(id=owner_id)
-                owner_model.email = email
-                owner_model.first_name = first_name
-                owner_model.last_name = last_name
-                owner_model.address = address
-                owner_model.phone_number = phone_number
-                owner_model.gender = gender
-                if owner_picture_url:
-                    owner_model.owner_picture = owner_picture_url
-                owner_model.save()
-
-                del request.session['owner_id']
-
-                messages.success(request, "Owner Updated Successfully!")
-                return redirect('/edit_owner/'+str(owner_id))
-            except Exception as e:
-                messages.error(request, "Failed to Update Owner: " + str(e))
-                return redirect('/edit_owner/'+str(owner_id))
+            form.save()
+            messages.success(request, "Owner Updated Successfully!")
+            return redirect('/edit_owner/'+str(owner_id))
         else:
             messages.error(request, "Form is not valid")
             return redirect('/edit_owner/'+str(owner_id))
+
 
 def delete_owner(request, owner_id):
     owner = get_object_or_404(Owners, id=owner_id)
@@ -257,25 +188,34 @@ def delete_owner(request, owner_id):
     except Exception as e:
         messages.error(request, "Failed to Delete Owner: " + str(e))
         return redirect('manage_owner')
+    
 
-def add_location(request):
+
+def add_carbox_detail(request):
     owner_list = Owners.objects.all()
     if not owner_list.exists():
         messages.error(request, "No owners found in the database")
     context = {
         'owner_list': owner_list
     }
-    return render(request, "hod_template/add_location_template.html", context)
+    return render(request, "hod_template/add_carbox_detail_template.html", context)
 
-def add_location_save(request):
+def add_carbox_detail_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method!")
-        return redirect('add_location')
+        return redirect('add_carbox_detail')
     
     latitude = request.POST.get('latitude')
     longitude = request.POST.get('longitude')
     owner_id = request.POST.get('owner')
+    car_id = request.POST.get('car')
     timestamp_str = request.POST.get('timestamp')
+    left_indicator_status = request.POST.get('left_indicator_status') == 'on'
+    right_indicator_status = request.POST.get('right_indicator_status') == 'on'
+    alcohol_detected = request.POST.get('alcohol_detected') == 'on'
+    vibration = request.POST.get('vibration') == 'on'
+    headlight_status = request.POST.get('headlight_status') == 'on'
+    hazard_status = request.POST.get('hazard_status') == 'on'
 
     try:
         timestamp = parse_datetime(timestamp_str)
@@ -283,116 +223,172 @@ def add_location_save(request):
             raise ValueError("Invalid timestamp format")
 
         owner = Owners.objects.get(id=owner_id)
+        car = Cars.objects.get(id=car_id)
 
-        location = Location(
+        carbox_detail = CarboxDetail(
             latitude=latitude,
             longitude=longitude,
             owner=owner,
-            timestamp=timestamp
+            car=car,
+            timestamp=timestamp,
+            left_indicator_status=left_indicator_status,
+            right_indicator_status=right_indicator_status,
+            alcohol_detected=alcohol_detected,
+            vibration=vibration,
+            headlight_status=headlight_status,
+            hazard_status=hazard_status
         )
-        location.save()
-        messages.success(request, "Location Added Successfully!")
-        return redirect('add_location')
+        carbox_detail.save()
+        messages.success(request, "Carbox Detail Added Successfully!")
+        return redirect('add_carbox_detail')
     except Exception as e:
-        messages.error(request, f"Failed to Add Location: {e}")
-        return redirect('add_location')
+        messages.error(request, f"Failed to Add Carbox Detail: {e}")
+        return redirect('add_carbox_detail')
 
-def manage_location(request):
-    locations = Location.objects.all()
+def manage_carbox_detail(request):
+    carbox_details = CarboxDetail.objects.all()
     context = {
-        "locations": locations
+        "carbox_details": carbox_details
     }
-    return render(request, 'hod_template/manage_location_template.html', context)
+    return render(request, 'hod_template/manage_carbox_detail_template.html', context)
 
-def edit_location(request, location_id):
-    location = get_object_or_404(Location, id=location_id)
+def edit_carbox_detail(request, carbox_detail_id):
+    carbox_detail = get_object_or_404(CarboxDetail, id=carbox_detail_id)
     context = {
-        "location": location,
-        "id": location_id
+        "carbox_detail": carbox_detail,
+        "id": carbox_detail_id
     }
-    return render(request, 'hod_template/edit_location_template.html', context)
+    return render(request, 'hod_template/edit_carbox_detail_template.html', context)
 
-def edit_location_save(request):
+
+def edit_carbox_detail_save(request):
     if request.method != "POST":
         HttpResponse("Invalid Method")
     else:
-        location_id = request.POST.get('location_id')
+        carbox_detail_id = request.POST.get('carbox_detail_id')
         latitude = request.POST.get('latitude')
         longitude = request.POST.get('longitude')
         owner_id = request.POST.get('owner_id')
+        car_id = request.POST.get('car_id')
         timestamp_str = request.POST.get('timestamp')
+        left_indicator_status = request.POST.get('left_indicator_status') == 'on'
+        right_indicator_status = request.POST.get('right_indicator_status') == 'on'
+        alcohol_detected = request.POST.get('alcohol_detected') == 'on'
+        vibration = request.POST.get('vibration') == 'on'
+        headlight_status = request.POST.get('headlight_status') == 'on'
+        hazard_status = request.POST.get('hazard_status') == 'on'
 
         try:
             timestamp = parse_datetime(timestamp_str)
             if timestamp is None:
                 raise ValueError("Invalid timestamp format")
 
-            location = Location.objects.get(id=location_id)
-            location.latitude = latitude
-            location.longitude = longitude
-            location.owner_id = owner_id
-            location.timestamp = timestamp
-            location.save()
+            carbox_detail = CarboxDetail.objects.get(id=carbox_detail_id)
+            carbox_detail.latitude = latitude
+            carbox_detail.longitude = longitude
+            carbox_detail.owner_id = owner_id
+            carbox_detail.car_id = car_id
+            carbox_detail.timestamp = timestamp
+            carbox_detail.left_indicator_status = left_indicator_status
+            carbox_detail.right_indicator_status = right_indicator_status
+            carbox_detail.alcohol_detected = alcohol_detected
+            carbox_detail.vibration = vibration
+            carbox_detail.headlight_status = headlight_status
+            carbox_detail.hazard_status = hazard_status
+            carbox_detail.save()
 
-            messages.success(request, "Location Updated Successfully.")
-            return redirect('/edit_location/'+location_id)
+            messages.success(request, "Carbox Detail Updated Successfully.")
+            return redirect(f'/edit_carbox_detail/{carbox_detail_id}')
 
         except Exception as e:
-            messages.error(request, f"Failed to Update Location: {e}")
-            return redirect('/edit_location/'+location_id)
+            messages.error(request, f"Failed to Update Carbox Detail: {e}")
+            return redirect(f'/edit_carbox_detail/{carbox_detail_id}')
 
-def delete_location(request, location_id):
-    location = Location.objects.get(id=location_id)
+def delete_carbox_detail(request, carbox_detail_id):
+    carbox_detail = CarboxDetail.objects.get(id=carbox_detail_id)
     try:
-        location.delete()
-        messages.success(request, "Location Deleted Successfully.")
-        return redirect('manage_location')
+        carbox_detail.delete()
+        messages.success(request, "Carbox Detail Deleted Successfully.")
+        return redirect('manage_carbox_detail')
     except:
-        messages.error(request, "Failed to Delete Location.")
-        return redirect('manage_location')
+        messages.error(request, "Failed to Delete Carbox Detail.")
+        return redirect('manage_carbox_detail')
+    
 
 
+
+
+def view_carbox_location(request, car_id):
+    # Assuming you have a method to identify the current user's related car
+    # For example, request.user.customuser.car or similar method to get car details
+    car = get_object_or_404(Cars, id=car_id)
+    carbox_location = CarboxDetail.objects.filter(car=car).order_by('-timestamp').first()
+    
+    if carbox_location is None:
+        context = {
+            'error': 'No carbox location found for this car'
+        }
+    else:
+        context = {
+            'carbox_location': carbox_location
+        }
+
+    return render(request, 'hod_template/carbox_location_template.html', context)
 
 
 
 @csrf_exempt
-def receive_location_data(request):
+def receive_carbox_detail_data(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)  # Parse JSON data from the request body
-            student_id = data.get('student_id')
+            owner_id = data.get('owner_id')
+            car_id = data.get('car_id')
             latitude = data.get('latitude')
             longitude = data.get('longitude')
             timestamp = data.get('timestamp', None)
+            left_indicator_status = data.get('left_indicator_status', False)
+            right_indicator_status = data.get('right_indicator_status', False)
+            alcohol_detected = data.get('alcohol_detected', False)
+            vibration = data.get('vibration', False)
+            headlight_status = data.get('headlight_status', False)
+            hazard_status = data.get('hazard_status', False)
 
             # Ensure all required fields are provided
-            if not all([student_id, latitude, longitude]):
+            if not all([owner_id, car_id, latitude, longitude]):
                 return JsonResponse({"status": "error", "message": "Missing required fields"})
 
-            # Find the student instance
-            student = Owners.objects.get(id=student_id)
+            # Find the owner and car instances
+            owner = Owners.objects.get(id=owner_id)
+            car = Cars.objects.get(id=car_id)
 
-            # Create the Location instance, using the current time if timestamp is not provided
-            location = Location(
-                student=student,
+            # Create the CarboxDetail instance, using the current time if timestamp is not provided
+            carbox_detail = CarboxDetail(
+                owner=owner,
+                car=car,
                 latitude=latitude,
                 longitude=longitude,
-                timestamp=parse_datetime(timestamp) if timestamp else timezone.now()
+                timestamp=parse_datetime(timestamp) if timestamp else timezone.now(),
+                left_indicator_status=left_indicator_status,
+                right_indicator_status=right_indicator_status,
+                alcohol_detected=alcohol_detected,
+                vibration=vibration,
+                headlight_status=headlight_status,
+                hazard_status=hazard_status
             )
-            location.save()
+            carbox_detail.save()
 
-            return JsonResponse({"status": "success", "message": "Location data saved successfully"})
+            return JsonResponse({"status": "success", "message": "Carbox detail data saved successfully"})
         except Owners.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Student not found"})
+            return JsonResponse({"status": "error", "message": "Owner not found"})
+        except Cars.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Car not found"})
         except json.JSONDecodeError:
             return JsonResponse({"status": "error", "message": "Invalid JSON data"})
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)})
     else:
         return JsonResponse({"status": "error", "message": "Invalid request method"})
-
-
-
 @csrf_exempt
 def check_email_exist(request):
     email = request.POST.get("email")

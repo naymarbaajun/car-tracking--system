@@ -4,7 +4,7 @@
     <!-- Brand Logo -->
     <a href="{% url 'admin_home' %}" class="brand-link">
         <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">CarBlack Box</span>
+        <span class="brand-text font-weight-light">Car Black-Box</span>
     </a>
 
     <!-- Sidebar -->
@@ -76,23 +76,34 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    {% url 'manage_location' as manage_location %}
-                    {% url 'edit_location' location_id=id as edit_location %}
-                    <a href="{{ manage_location }}" class="nav-link {% if request.path == manage_location %} active {% endif %} {% if request.path == edit_location %} active {% endif %}">
-                        <i class="nav-icon fas fa-map-marker-alt"></i>
+                    <li class="nav-item">
+                    {% url 'manage_carbox_details' as manage_carbox_details %}
+                    {% url 'edit_carbox_detail' location_id=id as edit_carbox_detail %}
+                    <a href="{{ manage_carbox_details }}" class="nav-link {% if request.path == manage_carbox_details %} active {% endif %} {% if request.path == edit_carbox_detail %} active {% endif %}">
+                        <i class="nav-icon fas fa-car"></i>
                         <p>
-                            Manage Car Location
+                            Manage Carbox Details
                         </p>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    {% url 'add_location' as add_location %}
-                    <a href="{{ add_location }}" class="nav-link {% if request.path == add_location %} active {% endif %}">
+                    {% url 'add_carbox_detail' as add_carbox_detail %}
+                    <a href="{{ add_carbox_detail }}" class="nav-link {% if request.path == add_carbox_detail %} active {% endif %}">
+                        <i class="nav-icon fas fa-plus"></i>
+                        <p>
+                            Add Carbox Detail
+                        </p>
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    {% url 'view_carbox_location' car_id=id as view_carbox_location %}
+                    <a href="{{ view_carbox_location }}" class="nav-link {% if request.path == view_carbox_location %} active {% endif %}">
                         <i class="nav-icon fas fa-map-marker-alt"></i>
                         <p>
-                            Add Car Location
+                            View Carbox Locations
                         </p>
                     </a>
                 </li>

@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Add Location
+    Add Carbox Detail
 {% endblock page_title %}
 
 {% block main_content %}
@@ -13,11 +13,11 @@
                 <!-- general form elements -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Add Location</h3>
+                        <h3 class="card-title">Add Carbox Detail</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form role="form" method="POST" action="{% url 'add_location_save' %}">
+                    <form role="form" method="POST" action="{% url 'add_carbox_detail_save' %}">
                         {% csrf_token %}
 
                         <!-- Display Messages -->
@@ -47,6 +47,34 @@
 
                         <div class="card-body">
                             <div class="form-group">
+                                <label for="left_indicator">Left Indicator</label>
+                                <select class="form-control" id="left_indicator" name="left_indicator" required>
+                                    <option value="0">Off</option>
+                                    <option value="1">On</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="right_indicator">Right Indicator</label>
+                                <select class="form-control" id="right_indicator" name="right_indicator" required>
+                                    <option value="0">Off</option>
+                                    <option value="1">On</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="alcohol_detected">Alcohol Detected</label>
+                                <select class="form-control" id="alcohol_detected" name="alcohol_detected" required>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="vibration">Vibration (Collision Detected)</label>
+                                <select class="form-control" id="vibration" name="vibration" required>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="latitude">Latitude</label>
                                 <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Enter Latitude (e.g., 6.7714° S)" required>
                             </div>
@@ -55,11 +83,25 @@
                                 <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Enter Longitude (e.g., 39.2083° E)" required>
                             </div>
                             <div class="form-group">
+                                <label for="headlight">Headlight</label>
+                                <select class="form-control" id="headlight" name="headlight" required>
+                                    <option value="0">Off</option>
+                                    <option value="1">On</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="hazard">Hazard</label>
+                                <select class="form-control" id="hazard" name="hazard" required>
+                                    <option value="0">Off</option>
+                                    <option value="1">On</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="owner">Owner</label>
                                 <select class="form-control" id="owner" name="owner" required>
                                     <option value="" selected disabled>Select Owner</option>
                                     {% for owner in owner_list %}
-                                        <option value="{{ owner.id }}">{{ owner.username }}</option>
+                                        <option value="{{ owner.id }}">{{ owner.first_name }} {{ owner.last_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -76,7 +118,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Add Location</button>
+                            <button type="submit" class="btn btn-primary">Add Carbox Detail</button>
                         </div>
                     </form>
                 </div>

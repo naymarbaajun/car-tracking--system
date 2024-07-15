@@ -1,0 +1,70 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Carbox Location
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="container-fluid">
+        {% if messages %}
+        <div class="form-group">
+            <div class="col-12">
+                {% for message in messages %}
+                    {% if message.tags == "error" %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% elif message.tags == "success" %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Carbox Location</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Car Name</label>
+                            <input type="text" class="form-control" value="{{ carbox_location.car.car_name }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Latitude</label>
+                            <input type="text" class="form-control" value="{{ carbox_location.latitude }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Longitude</label>
+                            <input type="text" class="form-control" value="{{ carbox_location.longitude }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Timestamp</label>
+                            <input type="text" class="form-control" value="{{ carbox_location.timestamp }}" readonly>
+                        </div>
+                        {# Constructing Google Maps URL dynamically #}
+                        {% url 'view_carbox_location' carbox_location.car.id as view_carbox_location_url %}
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ carbox_location.latitude }},{{ carbox_location.longitude }}" target="_blank" class="btn btn-primary">View Location on Google Maps</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock main_content %}

@@ -32,14 +32,16 @@ urlpatterns = [
     path('admin_profile_update/', HodViews.admin_profile_update, name="admin_profile_update"),
 
     # Location Management URLs
-    path('manage_location/', HodViews.manage_location, name="manage_location"),
-    path('add_location/', HodViews.add_location, name="add_location"),
-    path('add_location_save/', HodViews.add_location_save, name="add_location_save"),
-    path('edit_location/<int:location_id>/', HodViews.edit_location, name="edit_location"),
-    path('edit_location_save/', HodViews.edit_location_save, name="edit_location_save"),
-    path('delete_location/<int:location_id>/', HodViews.delete_location, name="delete_location"),
-    path('receive-location-data/', HodViews.receive_location_data, name='receive_location_data'),
+    path('manage_carbox_detail/', HodViews.manage_carbox_detail, name="manage_carbox_details"),
+    path('add_carbox_detail/', HodViews.add_carbox_detail, name="add_carbox_detail"),
+    path('add_carbox_detail_save/', HodViews.add_carbox_detail_save, name="add_carbox_detail_save"),
+    path('edit_carbox_detail/<int:carbox_detail_id>/', HodViews.edit_carbox_detail, name="edit_carbox_detail"),
+    path('edit_carbox_detail_save/', HodViews.edit_carbox_detail_save, name="edit_carbox_detail_save"),
+    path('delete_carbox_detail/<int:carbox_detail_id>/', HodViews.delete_carbox_detail, name="delete_carbox_detail"),
+
+    path('receive-location-data/', HodViews.receive_carbox_detail_data, name='receive_location_data'),
     
+    path('carbox/<int:car_id>/', HodViews.view_carbox_location, name='view_carbox_location'),
 
 
 ]

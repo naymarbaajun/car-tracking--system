@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Manage Location
+    Manage Carbox Details
 {% endblock page_title %}
 
 {% block main_content %}
@@ -10,7 +10,7 @@
 
 <section class="content">
     <div class="container-fluid">
-        <a class="btn btn-primary" href="{% url 'add_location' %}" role="button">+ Add Location</a> <br/>&nbsp;
+        <a class="btn btn-primary" href="{% url 'add_carbox_detail' %}" role="button">+ Add Carbox Detail</a> <br/>&nbsp;
 
         {% if messages %}
         <div class="form-group">
@@ -40,7 +40,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Location Details</h3>
+                        <h3 class="card-title">Carbox Detail Details</h3>
                         <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
                                 <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
@@ -55,24 +55,36 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Left Indicator</th>
+                                    <th>Right Indicator</th>
+                                    <th>Alcohol Detected</th>
+                                    <th>Vibration</th>
                                     <th>Latitude</th>
                                     <th>Longitude</th>
+                                    <th>Headlight</th>
+                                    <th>Hazard</th>
                                     <th>Owner</th>
-                                    <th>Timestamp</th>
+                                    <th>Car</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for location in locations %}
+                                {% for carbox_detail in carbox_details %}
                                 <tr>
-                                    <td>{{ location.id }}</td>
-                                    <td>{{ location.latitude }}</td>
-                                    <td>{{ location.longitude }}</td>
-                                    <td>{{ location.owner.admin.username }}</td>
-                                    <td>{{ location.timestamp }}</td>
+                                    <td>{{ carbox_detail.id }}</td>
+                                    <td>{{ carbox_detail.get_left_indicator_display }}</td>
+                                    <td>{{ carbox_detail.get_right_indicator_display }}</td>
+                                    <td>{{ carbox_detail.get_alcohol_detected_display }}</td>
+                                    <td>{{ carbox_detail.get_vibration_display }}</td>
+                                    <td>{{ carbox_detail.latitude }}</td>
+                                    <td>{{ carbox_detail.longitude }}</td>
+                                    <td>{{ carbox_detail.get_headlight_display }}</td>
+                                    <td>{{ carbox_detail.get_hazard_display }}</td>
+                                    <td>{{ carbox_detail.owner.first_name }} {{ carbox_detail.owner.last_name }}</td>
+                                    <td>{{ carbox_detail.car.car_name }}</td>
                                     <td>
-                                        <a href="{% url 'edit_location' location.id %}" class="btn btn-success">Edit</a> 
-                                        <a href="{% url 'delete_location' location.id %}" class="btn btn-danger">Delete</a>
+                                        <a href="{% url 'edit_carbox_detail' carbox_detail.id %}" class="btn btn-success">Edit</a> 
+                                        <a href="{% url 'delete_carbox_detail' carbox_detail.id %}" class="btn btn-danger">Delete</a>
                                     </td>
                                 </tr>
                                 {% endfor %}

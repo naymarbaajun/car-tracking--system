@@ -13,6 +13,8 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model 
 
 
+
+
 def admin_home(request):
     # Counting objects
     all_owner_count = Owners.objects.all().count()
@@ -25,7 +27,7 @@ def admin_home(request):
     owner_count_list_in_car = []
 
     for car in car_all:
-        owners = Owners.objects.filter(car_id=car.id).count()
+        owners = Owners.objects.filter(id=car.owner.id).count()  # Corrected line
         car_name_list.append(car.car_name)
         owner_count_list_in_car.append(owners)
     
@@ -48,7 +50,6 @@ def admin_home(request):
         "carbox_details": carbox_details,
     }
     return render(request, "hod_template/home_content.html", context)
-
 
 
 def add_car(request):

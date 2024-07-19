@@ -19,7 +19,7 @@
                     <!-- form start -->
                     <form role="form" method="POST" action="{% url 'add_carbox_detail_save' %}">
                         {% csrf_token %}
-
+                    
                         <!-- Display Messages -->
                         {% if messages %}
                             <div class="form-group">
@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                         {% endif %}
-
+                    
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="left_indicator">Left Indicator</label>
@@ -115,12 +115,12 @@
                                 </select>
                             </div>
                         </div>
-                        <!-- /.card-body -->
-
+                    
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">Add Carbox Detail</button>
                         </div>
                     </form>
+                    
                 </div>
                 <!-- /.card -->
             </div>

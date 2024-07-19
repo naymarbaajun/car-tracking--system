@@ -41,7 +41,7 @@ urlpatterns = [
 
     path('receive-location-data/', HodViews.receive_carbox_detail_data, name='receive_location_data'),
     
-    path('carbox/<int:car_id>/', HodViews.view_carbox_location, name='view_carbox_location'),
-
+    # path('carbox/<int:car_id>/', HodViews.view_carbox_location, name='view_carbox_location'),
+    
 
 ]

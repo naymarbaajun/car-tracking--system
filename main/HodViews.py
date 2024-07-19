@@ -15,6 +15,7 @@ from django.contrib.auth import get_user_model
 
 
 
+
 def admin_home(request):
     # Counting objects
     all_owner_count = Owners.objects.all().count()
@@ -25,11 +26,13 @@ def admin_home(request):
     car_all = Cars.objects.all()
     car_name_list = []
     owner_count_list_in_car = []
+    car_ids = []  # List to store car IDs
 
     for car in car_all:
         owners = Owners.objects.filter(id=car.owner.id).count()  # Corrected line
         car_name_list.append(car.car_name)
         owner_count_list_in_car.append(owners)
+        car_ids.append(car.id)  # Add car ID to the list
     
     # Getting owner details
     owner_name_list = []
@@ -48,6 +51,7 @@ def admin_home(request):
         "owner_count_list_in_car": owner_count_list_in_car,
         "owner_name_list": owner_name_list,
         "carbox_details": carbox_details,
+        "car_ids": car_ids,  # Add car IDs to the context
     }
     return render(request, "hod_template/home_content.html", context)
 
@@ -205,14 +209,21 @@ def delete_owner(request, owner_id):
         return redirect('manage_owner')
     
 
-
 def add_carbox_detail(request):
     owner_list = Owners.objects.all()
+    car_list = Cars.objects.all()
+
     if not owner_list.exists():
         messages.error(request, "No owners found in the database")
+
+    if not car_list.exists():
+        messages.error(request, "No cars found in the database")
+
     context = {
-        'owner_list': owner_list
+        'owner_list': owner_list,
+        'car_list': car_list,
     }
+    
     return render(request, "hod_template/add_carbox_detail_template.html", context)
 
 def add_carbox_detail_save(request):
@@ -224,19 +235,14 @@ def add_carbox_detail_save(request):
     longitude = request.POST.get('longitude')
     owner_id = request.POST.get('owner')
     car_id = request.POST.get('car')
-    timestamp_str = request.POST.get('timestamp')
-    left_indicator_status = request.POST.get('left_indicator_status') == 'on'
-    right_indicator_status = request.POST.get('right_indicator_status') == 'on'
-    alcohol_detected = request.POST.get('alcohol_detected') == 'on'
-    vibration = request.POST.get('vibration') == 'on'
-    headlight_status = request.POST.get('headlight_status') == 'on'
-    hazard_status = request.POST.get('hazard_status') == 'on'
+    left_indicator_status = request.POST.get('left_indicator') == '1'
+    right_indicator_status = request.POST.get('right_indicator') == '1'
+    alcohol_detected = request.POST.get('alcohol_detected') == '1'
+    vibration = request.POST.get('vibration') == '1'
+    headlight_status = request.POST.get('headlight') == '1'
+    hazard_status = request.POST.get('hazard') == '1'
 
     try:
-        timestamp = parse_datetime(timestamp_str)
-        if timestamp is None:
-            raise ValueError("Invalid timestamp format")
-
         owner = Owners.objects.get(id=owner_id)
         car = Cars.objects.get(id=car_id)
 
@@ -245,7 +251,6 @@ def add_carbox_detail_save(request):
             longitude=longitude,
             owner=owner,
             car=car,
-            timestamp=timestamp,
             left_indicator_status=left_indicator_status,
             right_indicator_status=right_indicator_status,
             alcohol_detected=alcohol_detected,
@@ -256,9 +261,13 @@ def add_carbox_detail_save(request):
         carbox_detail.save()
         messages.success(request, "Carbox Detail Added Successfully!")
         return redirect('add_carbox_detail')
+    except Owners.DoesNotExist:
+        messages.error(request, "Owner not found!")
+    except Cars.DoesNotExist:
+        messages.error(request, "Car not found!")
     except Exception as e:
         messages.error(request, f"Failed to Add Carbox Detail: {e}")
-        return redirect('add_carbox_detail')
+    return redirect('add_carbox_detail')
 
 def manage_carbox_detail(request):
     carbox_details = CarboxDetail.objects.all()
@@ -266,6 +275,7 @@ def manage_carbox_detail(request):
         "carbox_details": carbox_details
     }
     return render(request, 'hod_template/manage_carbox_detail_template.html', context)
+
 
 def edit_carbox_detail(request, carbox_detail_id):
     carbox_detail = get_object_or_404(CarboxDetail, id=carbox_detail_id)
@@ -319,6 +329,7 @@ def edit_carbox_detail_save(request):
             messages.error(request, f"Failed to Update Carbox Detail: {e}")
             return redirect(f'/edit_carbox_detail/{carbox_detail_id}')
 
+
 def delete_carbox_detail(request, carbox_detail_id):
     carbox_detail = CarboxDetail.objects.get(id=carbox_detail_id)
     try:
@@ -332,23 +343,25 @@ def delete_carbox_detail(request, carbox_detail_id):
 
 
 
+# def view_carbox_location(request, car_id):
+#     # Debug statement
+#     print(f"car_id: {car_id}")
 
-def view_carbox_location(request, car_id):
-    # Assuming you have a method to identify the current user's related car
-    # For example, request.user.customuser.car or similar method to get car details
-    car = get_object_or_404(Cars, id=car_id)
-    carbox_location = CarboxDetail.objects.filter(car=car).order_by('-timestamp').first()
-    
-    if carbox_location is None:
-        context = {
-            'error': 'No carbox location found for this car'
-        }
-    else:
-        context = {
-            'carbox_location': carbox_location
-        }
+#     car = get_object_or_404(Cars, id=car_id)
+#     carbox_location = CarboxDetail.objects.filter(car=car).order_by('-timestamp').first()
 
-    return render(request, 'hod_template/carbox_location_template.html', context)
+#     if carbox_location is None:
+#         context = {
+#             'error': 'No carbox location found for this car',
+#             'car_id': car_id,  # Include car_id in the context if needed in the template
+#         }
+#     else:
+#         context = {
+#             'carbox_location': carbox_location,
+#             'car_id': car_id,  # Include car_id in the context if needed in the template
+#         }
+
+#     return render(request, 'hod_template/carbox_location_template.html', context)
 
 
 

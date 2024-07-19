@@ -6,8 +6,6 @@
 
 {% block main_content %}
 
-{% load static %}
-
 <section class="content">
     <div class="container-fluid">
         {% if messages %}
@@ -41,6 +39,7 @@
                         <h3 class="card-title">Carbox Location</h3>
                     </div>
                     <div class="card-body">
+                        {% if carbox_location %}
                         <div class="form-group">
                             <label>Car Name</label>
                             <input type="text" class="form-control" value="{{ carbox_location.car.car_name }}" readonly>
@@ -57,9 +56,10 @@
                             <label>Timestamp</label>
                             <input type="text" class="form-control" value="{{ carbox_location.timestamp }}" readonly>
                         </div>
-                        {# Constructing Google Maps URL dynamically #}
-                        {% url 'view_carbox_location' carbox_location.car.id as view_carbox_location_url %}
                         <a href="https://www.google.com/maps/search/?api=1&query={{ carbox_location.latitude }},{{ carbox_location.longitude }}" target="_blank" class="btn btn-primary">View Location on Google Maps</a>
+                        {% else %}
+                        <p>No carbox location found for this car.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

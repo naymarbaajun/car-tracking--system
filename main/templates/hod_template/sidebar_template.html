@@ -98,15 +98,7 @@
                 </li>
 
 
-                <li class="nav-item">
-                    {% url 'view_carbox_location' car_id=id as view_carbox_location %}
-                    <a href="{{ view_carbox_location }}" class="nav-link {% if request.path == view_carbox_location %} active {% endif %}">
-                        <i class="nav-icon fas fa-map-marker-alt"></i>
-                        <p>
-                            View Carbox Locations
-                        </p>
-                    </a>
-                </li>
+
 
             </ul>
         </nav>

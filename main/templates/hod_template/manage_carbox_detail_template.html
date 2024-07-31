@@ -85,6 +85,7 @@
                                     <td>
                                         <a href="{% url 'edit_carbox_detail' carbox_detail.id %}" class="btn btn-success">Edit</a> 
                                         <a href="{% url 'delete_carbox_detail' carbox_detail.id %}" class="btn btn-danger">Delete</a>
+                                        <a href="https://www.google.com/maps/search/?api=1&query={{ carbox_detail.latitude }},{{ carbox_detail.longitude }}" target="_blank" class="btn btn-primary">View Location on Google Maps</a>
                                     </td>
                                 </tr>
                                 {% endfor %}

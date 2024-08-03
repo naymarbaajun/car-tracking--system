@@ -48,11 +48,10 @@ class Cars(models.Model):
 
 
 
-
 class CarboxDetail(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
-    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Owners, on_delete=models.CASCADE)
     car = models.ForeignKey(Cars, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     left_indicator_status = models.BooleanField(default=False)  # Off by default
@@ -61,6 +60,7 @@ class CarboxDetail(models.Model):
     vibration = models.BooleanField(default=False)  # No collision by default
     headlight_status = models.BooleanField(default=False)  # Off by default
     hazard_status = models.BooleanField(default=False)  # Off by default
+    speed = models.FloatField(default=0.0)  # Speed of the car, default is 0.0
 
     def __str__(self):
         # Convert boolean fields to 'Off' or 'On'
@@ -75,4 +75,4 @@ class CarboxDetail(models.Model):
                 f"Left Indicator: {left_indicator}, Right Indicator: {right_indicator}, "
                 f"Alcohol: {alcohol}, Vibration: {vibration_status}, "
                 f"Headlight: {headlight}, Hazard: {hazard}, "
-                f"Location: ({self.latitude}, {self.longitude})")
+                f"Location: ({self.latitude}, {self.longitude}), Speed: {self.speed} km/h")

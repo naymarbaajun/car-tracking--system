@@ -230,7 +230,7 @@ def add_carbox_detail_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method!")
         return redirect('add_carbox_detail')
-    
+
     latitude = request.POST.get('latitude')
     longitude = request.POST.get('longitude')
     owner_id = request.POST.get('owner')
@@ -241,6 +241,7 @@ def add_carbox_detail_save(request):
     vibration = request.POST.get('vibration') == '1'
     headlight_status = request.POST.get('headlight') == '1'
     hazard_status = request.POST.get('hazard') == '1'
+    speed = request.POST.get('speed')  # Add this line to capture speed
 
     try:
         owner = Owners.objects.get(id=owner_id)
@@ -249,14 +250,15 @@ def add_carbox_detail_save(request):
         carbox_detail = CarboxDetail(
             latitude=latitude,
             longitude=longitude,
-            owner=owner,
+            owner=owner.user,  # Use the linked CustomUser instance
             car=car,
             left_indicator_status=left_indicator_status,
             right_indicator_status=right_indicator_status,
             alcohol_detected=alcohol_detected,
             vibration=vibration,
             headlight_status=headlight_status,
-            hazard_status=hazard_status
+            hazard_status=hazard_status,
+            speed=speed  # Save the speed
         )
         carbox_detail.save()
         messages.success(request, "Carbox Detail Added Successfully!")
@@ -268,6 +270,7 @@ def add_carbox_detail_save(request):
     except Exception as e:
         messages.error(request, f"Failed to Add Carbox Detail: {e}")
     return redirect('add_carbox_detail')
+
 
 def manage_carbox_detail(request):
     carbox_details = CarboxDetail.objects.all()
@@ -302,6 +305,7 @@ def edit_carbox_detail_save(request):
         vibration = request.POST.get('vibration') == 'on'
         headlight_status = request.POST.get('headlight_status') == 'on'
         hazard_status = request.POST.get('hazard_status') == 'on'
+        speed = request.POST.get('speed')  # Add this line to capture speed
 
         try:
             timestamp = parse_datetime(timestamp_str)
@@ -320,14 +324,17 @@ def edit_carbox_detail_save(request):
             carbox_detail.vibration = vibration
             carbox_detail.headlight_status = headlight_status
             carbox_detail.hazard_status = hazard_status
+            carbox_detail.speed = speed  # Update the speed
             carbox_detail.save()
 
-            messages.success(request, "Carbox Detail Updated Successfully.")
-            return redirect(f'/edit_carbox_detail/{carbox_detail_id}')
-
+            messages.success(request, "Carbox Detail Updated Successfully!")
+            return redirect('edit_carbox_detail', carbox_detail_id=carbox_detail.id)
+        except CarboxDetail.DoesNotExist:
+            messages.error(request, "Carbox Detail not found!")
         except Exception as e:
             messages.error(request, f"Failed to Update Carbox Detail: {e}")
-            return redirect(f'/edit_carbox_detail/{carbox_detail_id}')
+    return redirect('edit_carbox_detail', carbox_detail_id=carbox_detail_id)
+
 
 
 def delete_carbox_detail(request, carbox_detail_id):

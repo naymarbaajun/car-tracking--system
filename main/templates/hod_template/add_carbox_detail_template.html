@@ -1,3 +1,4 @@
+<!-- add_carbox_detail.html -->
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
@@ -5,46 +6,41 @@
 {% endblock page_title %}
 
 {% block main_content %}
-
 <section class="content">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <!-- general form elements -->
                 <div class="card card-primary">
                     <div class="card-header">
                         <h3 class="card-title">Add Carbox Detail</h3>
                     </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
                     <form role="form" method="POST" action="{% url 'add_carbox_detail_save' %}">
                         {% csrf_token %}
-                    
-                        <!-- Display Messages -->
+                        
                         {% if messages %}
-                            <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                        {% if message.tags == "error" %}
-                                            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                                {{ message }}
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                        {% elif message.tags == "success" %}
-                                            <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                                {{ message }}
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
+                        <div class="form-group">
+                            <div class="col-12">
+                                {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    {% elif message.tags == "success" %}
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
+                        </div>
                         {% endif %}
-                    
+                        
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="left_indicator">Left Indicator</label>
@@ -101,7 +97,7 @@
                                 <select class="form-control" id="owner" name="owner" required>
                                     <option value="" selected disabled>Select Owner</option>
                                     {% for owner in owner_list %}
-                                        <option value="{{ owner.id }}">{{ owner.first_name }} {{ owner.last_name }}</option>
+                                    <option value="{{ owner.id }}">{{ owner.first_name }} {{ owner.last_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -110,28 +106,22 @@
                                 <select class="form-control" id="car" name="car" required>
                                     <option value="" selected disabled>Select Car</option>
                                     {% for car in car_list %}
-                                        <option value="{{ car.id }}">{{ car.car_name }}</option>
+                                    <option value="{{ car.id }}">{{ car.car_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="speed">Speed</label>
+                                <input type="text" class="form-control" id="speed" name="speed" placeholder="Enter Speed (e.g., 50.25)" required>
+                            </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="speed">Speed (km/h)</label>
-                            <input type="number" class="form-control" id="speed" name="speed" placeholder="Enter Speed" step="0.1" required>
-                        </div>
-                        
-                    
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">Add Carbox Detail</button>
                         </div>
                     </form>
-                    
                 </div>
-                <!-- /.card -->
             </div>
         </div>
-    </div><!-- /.container-fluid -->
+    </div>
 </section>
-
 {% endblock main_content %}

@@ -63,6 +63,7 @@
                                     <th>Longitude</th>
                                     <th>Headlight</th>
                                     <th>Hazard</th>
+                                    <th>Speed</th> <!-- Added Speed Column -->
                                     <th>Owner</th>
                                     <th>Car</th>
                                     <th>Action</th>
@@ -72,14 +73,15 @@
                                 {% for carbox_detail in carbox_details %}
                                 <tr>
                                     <td>{{ carbox_detail.id }}</td>
-                                    <td>{{ carbox_detail.get_left_indicator_display }}</td>
-                                    <td>{{ carbox_detail.get_right_indicator_display }}</td>
-                                    <td>{{ carbox_detail.get_alcohol_detected_display }}</td>
-                                    <td>{{ carbox_detail.get_vibration_display }}</td>
+                                    <td>{{ carbox_detail.left_indicator_status|yesno:"On,Off" }}</td>
+                                    <td>{{ carbox_detail.right_indicator_status|yesno:"On,Off" }}</td>
+                                    <td>{{ carbox_detail.alcohol_detected|yesno:"Detected,Not Detected" }}</td>
+                                    <td>{{ carbox_detail.vibration|yesno:"Collision Detected,No Collision" }}</td>
                                     <td>{{ carbox_detail.latitude }}</td>
                                     <td>{{ carbox_detail.longitude }}</td>
-                                    <td>{{ carbox_detail.get_headlight_display }}</td>
-                                    <td>{{ carbox_detail.get_hazard_display }}</td>
+                                    <td>{{ carbox_detail.headlight_status|yesno:"On,Off" }}</td>
+                                    <td>{{ carbox_detail.hazard_status|yesno:"On,Off" }}</td>
+                                    <td>{{ carbox_detail.speed }}</td>
                                     <td>{{ carbox_detail.owner.first_name }} {{ carbox_detail.owner.last_name }}</td>
                                     <td>{{ carbox_detail.car.car_name }}</td>
                                     <td>
@@ -90,6 +92,7 @@
                                 </tr>
                                 {% endfor %}
                             </tbody>
+                            
                         </table>
                     </div>
                 </div>

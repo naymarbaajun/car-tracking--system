@@ -241,7 +241,7 @@ def add_carbox_detail_save(request):
     vibration = request.POST.get('vibration') == '1'
     headlight_status = request.POST.get('headlight') == '1'
     hazard_status = request.POST.get('hazard') == '1'
-    speed = request.POST.get('speed')  # Add this line to capture speed
+    speed = request.POST.get('speed')
 
     try:
         owner = Owners.objects.get(id=owner_id)
@@ -250,7 +250,7 @@ def add_carbox_detail_save(request):
         carbox_detail = CarboxDetail(
             latitude=latitude,
             longitude=longitude,
-            owner=owner.user,  # Use the linked CustomUser instance
+            owner=owner,  # Use the Owners instance directly
             car=car,
             left_indicator_status=left_indicator_status,
             right_indicator_status=right_indicator_status,
@@ -258,7 +258,7 @@ def add_carbox_detail_save(request):
             vibration=vibration,
             headlight_status=headlight_status,
             hazard_status=hazard_status,
-            speed=speed  # Save the speed
+            speed=speed
         )
         carbox_detail.save()
         messages.success(request, "Carbox Detail Added Successfully!")
@@ -282,49 +282,48 @@ def manage_carbox_detail(request):
 
 def edit_carbox_detail(request, carbox_detail_id):
     carbox_detail = get_object_or_404(CarboxDetail, id=carbox_detail_id)
+    owner_list = Owners.objects.all()  # Fetch all owners
+    car_list = Cars.objects.all()  # Fetch all cars
+
     context = {
         "carbox_detail": carbox_detail,
-        "id": carbox_detail_id
+        "owner_list": owner_list,
+        "car_list": car_list,
     }
     return render(request, 'hod_template/edit_carbox_detail_template.html', context)
 
 
+
 def edit_carbox_detail_save(request):
     if request.method != "POST":
-        HttpResponse("Invalid Method")
+        return HttpResponse("Invalid Method")
     else:
         carbox_detail_id = request.POST.get('carbox_detail_id')
         latitude = request.POST.get('latitude')
         longitude = request.POST.get('longitude')
-        owner_id = request.POST.get('owner_id')
-        car_id = request.POST.get('car_id')
-        timestamp_str = request.POST.get('timestamp')
-        left_indicator_status = request.POST.get('left_indicator_status') == 'on'
-        right_indicator_status = request.POST.get('right_indicator_status') == 'on'
-        alcohol_detected = request.POST.get('alcohol_detected') == 'on'
-        vibration = request.POST.get('vibration') == 'on'
-        headlight_status = request.POST.get('headlight_status') == 'on'
-        hazard_status = request.POST.get('hazard_status') == 'on'
-        speed = request.POST.get('speed')  # Add this line to capture speed
+        owner_id = request.POST.get('owner')  # Corrected field name
+        car_id = request.POST.get('car')  # Corrected field name
+        left_indicator_status = request.POST.get('left_indicator') == '1'  # Corrected value comparison
+        right_indicator_status = request.POST.get('right_indicator') == '1'  # Corrected value comparison
+        alcohol_detected = request.POST.get('alcohol_detected') == '1'  # Corrected value comparison
+        vibration = request.POST.get('vibration') == '1'  # Corrected value comparison
+        headlight_status = request.POST.get('headlight') == '1'  # Corrected value comparison
+        hazard_status = request.POST.get('hazard') == '1'  # Corrected value comparison
+        speed = request.POST.get('speed')
 
         try:
-            timestamp = parse_datetime(timestamp_str)
-            if timestamp is None:
-                raise ValueError("Invalid timestamp format")
-
             carbox_detail = CarboxDetail.objects.get(id=carbox_detail_id)
             carbox_detail.latitude = latitude
             carbox_detail.longitude = longitude
             carbox_detail.owner_id = owner_id
             carbox_detail.car_id = car_id
-            carbox_detail.timestamp = timestamp
             carbox_detail.left_indicator_status = left_indicator_status
             carbox_detail.right_indicator_status = right_indicator_status
             carbox_detail.alcohol_detected = alcohol_detected
             carbox_detail.vibration = vibration
             carbox_detail.headlight_status = headlight_status
             carbox_detail.hazard_status = hazard_status
-            carbox_detail.speed = speed  # Update the speed
+            carbox_detail.speed = speed
             carbox_detail.save()
 
             messages.success(request, "Carbox Detail Updated Successfully!")

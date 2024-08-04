@@ -1,13 +1,10 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Edit Carbox Detail | #ID : {{ carbox_detail.id }}
+    Edit Carbox Detail
 {% endblock page_title %}
 
 {% block main_content %}
-
-{% load static %}
-
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -18,6 +15,8 @@
                     </div>
                     <form role="form" method="POST" action="{% url 'edit_carbox_detail_save' %}">
                         {% csrf_token %}
+                        <input type="hidden" name="carbox_detail_id" value="{{ carbox_detail.id }}">
+
                         {% if messages %}
                         <div class="form-group">
                             <div class="col-12">
@@ -41,35 +40,8 @@
                             </div>
                         </div>
                         {% endif %}
+
                         <div class="card-body">
-                            <div class="form-group">
-                                <label for="left_indicator">Left Indicator</label>
-                                <select class="form-control" id="left_indicator" name="left_indicator" required>
-                                    <option value="0" {% if carbox_detail.left_indicator == 0 %}selected{% endif %}>Off</option>
-                                    <option value="1" {% if carbox_detail.left_indicator == 1 %}selected{% endif %}>On</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="right_indicator">Right Indicator</label>
-                                <select class="form-control" id="right_indicator" name="right_indicator" required>
-                                    <option value="0" {% if carbox_detail.right_indicator == 0 %}selected{% endif %}>Off</option>
-                                    <option value="1" {% if carbox_detail.right_indicator == 1 %}selected{% endif %}>On</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="alcohol_detected">Alcohol Detected</label>
-                                <select class="form-control" id="alcohol_detected" name="alcohol_detected" required>
-                                    <option value="0" {% if carbox_detail.alcohol_detected == 0 %}selected{% endif %}>No</option>
-                                    <option value="1" {% if carbox_detail.alcohol_detected == 1 %}selected{% endif %}>Yes</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="vibration">Vibration (Collision Detected)</label>
-                                <select class="form-control" id="vibration" name="vibration" required>
-                                    <option value="0" {% if carbox_detail.vibration == 0 %}selected{% endif %}>No</option>
-                                    <option value="1" {% if carbox_detail.vibration == 1 %}selected{% endif %}>Yes</option>
-                                </select>
-                            </div>
                             <div class="form-group">
                                 <label for="latitude">Latitude</label>
                                 <input type="text" class="form-control" id="latitude" name="latitude" value="{{ carbox_detail.latitude }}" required>
@@ -79,53 +51,79 @@
                                 <input type="text" class="form-control" id="longitude" name="longitude" value="{{ carbox_detail.longitude }}" required>
                             </div>
                             <div class="form-group">
-                                <label for="headlight">Headlight</label>
-                                <select class="form-control" id="headlight" name="headlight" required>
-                                    <option value="0" {% if carbox_detail.headlight == 0 %}selected{% endif %}>Off</option>
-                                    <option value="1" {% if carbox_detail.headlight == 1 %}selected{% endif %}>On</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="hazard">Hazard</label>
-                                <select class="form-control" id="hazard" name="hazard" required>
-                                    <option value="0" {% if carbox_detail.hazard == 0 %}selected{% endif %}>Off</option>
-                                    <option value="1" {% if carbox_detail.hazard == 1 %}selected{% endif %}>On</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
                                 <label for="owner">Owner</label>
                                 <select class="form-control" id="owner" name="owner" required>
-                                    <option value="" selected disabled>Select Owner</option>
                                     {% for owner in owner_list %}
-                                        <option value="{{ owner.id }}" {% if carbox_detail.owner.id == owner.id %}selected{% endif %}>{{ owner.first_name }} {{ owner.last_name }}</option>
+                                    <option value="{{ owner.id }}" {% if owner.id == carbox_detail.owner.id %}selected{% endif %}>
+                                        {{ owner.first_name }} {{ owner.last_name }}
+                                    </option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="car">Car</label>
                                 <select class="form-control" id="car" name="car" required>
-                                    <option value="" selected disabled>Select Car</option>
                                     {% for car in car_list %}
-                                        <option value="{{ car.id }}" {% if carbox_detail.car.id == car.id %}selected{% endif %}>{{ car.car_name }}</option>
+                                    <option value="{{ car.id }}" {% if car.id == carbox_detail.car.id %}selected{% endif %}>
+                                        {{ car.car_name }} ({{ car.car_model }})
+                                    </option>
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="left_indicator">Left Indicator</label>
+                                <select class="form-control" id="left_indicator" name="left_indicator" required>
+                                    <option value="0" {% if not carbox_detail.left_indicator_status %}selected{% endif %}>Off</option>
+                                    <option value="1" {% if carbox_detail.left_indicator_status %}selected{% endif %}>On</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="right_indicator">Right Indicator</label>
+                                <select class="form-control" id="right_indicator" name="right_indicator" required>
+                                    <option value="0" {% if not carbox_detail.right_indicator_status %}selected{% endif %}>Off</option>
+                                    <option value="1" {% if carbox_detail.right_indicator_status %}selected{% endif %}>On</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="alcohol_detected">Alcohol Detected</label>
+                                <select class="form-control" id="alcohol_detected" name="alcohol_detected" required>
+                                    <option value="0" {% if not carbox_detail.alcohol_detected %}selected{% endif %}>No</option>
+                                    <option value="1" {% if carbox_detail.alcohol_detected %}selected{% endif %}>Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="vibration">Vibration (Collision Detected)</label>
+                                <select class="form-control" id="vibration" name="vibration" required>
+                                    <option value="0" {% if not carbox_detail.vibration %}selected{% endif %}>No</option>
+                                    <option value="1" {% if carbox_detail.vibration %}selected{% endif %}>Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="headlight">Headlight</label>
+                                <select class="form-control" id="headlight" name="headlight" required>
+                                    <option value="0" {% if not carbox_detail.headlight_status %}selected{% endif %}>Off</option>
+                                    <option value="1" {% if carbox_detail.headlight_status %}selected{% endif %}>On</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="hazard">Hazard</label>
+                                <select class="form-control" id="hazard" name="hazard" required>
+                                    <option value="0" {% if not carbox_detail.hazard_status %}selected{% endif %}>Off</option>
+                                    <option value="1" {% if carbox_detail.hazard_status %}selected{% endif %}>On</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="speed">Speed</label>
+                                <input type="text" class="form-control" id="speed" name="speed" value="{{ carbox_detail.speed }}" required>
+                            </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="speed">Speed (km/h)</label>
-                            <input type="number" class="form-control" id="speed" name="speed" placeholder="Enter Speed" step="0.1" required>
-                        </div>
-                        
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Update Carbox Detail</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
-                        <input type="hidden" name="carbox_detail_id" value="{{ carbox_detail.id }}">
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-{% endblock main_content %}
+{% endblock %}

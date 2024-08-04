@@ -387,14 +387,20 @@ def receive_carbox_detail_data(request):
             vibration = data.get('vibration', False)
             headlight_status = data.get('headlight_status', False)
             hazard_status = data.get('hazard_status', False)
+            speed = data.get('speed', 0.0)  # Default to 0.0 if not provided
 
             # Ensure all required fields are provided
             if not all([owner_id, car_id, latitude, longitude]):
                 return JsonResponse({"status": "error", "message": "Missing required fields"})
 
             # Find the owner and car instances
-            owner = Owners.objects.get(id=owner_id)
-            car = Cars.objects.get(id=car_id)
+            try:
+                owner = Owners.objects.get(id=owner_id)
+                car = Cars.objects.get(id=car_id)
+            except Owners.DoesNotExist:
+                return JsonResponse({"status": "error", "message": "Owner not found"})
+            except Cars.DoesNotExist:
+                return JsonResponse({"status": "error", "message": "Car not found"})
 
             # Create the CarboxDetail instance, using the current time if timestamp is not provided
             carbox_detail = CarboxDetail(
@@ -408,21 +414,20 @@ def receive_carbox_detail_data(request):
                 alcohol_detected=alcohol_detected,
                 vibration=vibration,
                 headlight_status=headlight_status,
-                hazard_status=hazard_status
+                hazard_status=hazard_status,
+                speed=float(speed)  # Convert speed to float
             )
             carbox_detail.save()
 
             return JsonResponse({"status": "success", "message": "Carbox detail data saved successfully"})
-        except Owners.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Owner not found"})
-        except Cars.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Car not found"})
         except json.JSONDecodeError:
             return JsonResponse({"status": "error", "message": "Invalid JSON data"})
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)})
     else:
         return JsonResponse({"status": "error", "message": "Invalid request method"})
+    
+
 @csrf_exempt
 def check_email_exist(request):
     email = request.POST.get("email")

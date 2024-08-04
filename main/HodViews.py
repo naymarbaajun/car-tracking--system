@@ -369,8 +369,6 @@ def delete_carbox_detail(request, carbox_detail_id):
 
 #     return render(request, 'hod_template/carbox_location_template.html', context)
 
-
-
 @csrf_exempt
 def receive_carbox_detail_data(request):
     if request.method == "POST":
@@ -380,27 +378,22 @@ def receive_carbox_detail_data(request):
             car_id = data.get('car_id')
             latitude = data.get('latitude')
             longitude = data.get('longitude')
-            timestamp = data.get('timestamp', None)
+            timestamp = data.get('timestamp', None)  # Default to None if not provided
             left_indicator_status = data.get('left_indicator_status', False)
             right_indicator_status = data.get('right_indicator_status', False)
             alcohol_detected = data.get('alcohol_detected', False)
             vibration = data.get('vibration', False)
             headlight_status = data.get('headlight_status', False)
             hazard_status = data.get('hazard_status', False)
-            speed = data.get('speed', 0.0)  # Default to 0.0 if not provided
+            speed = data.get('speed', 0.0)  # Add default value for speed
 
             # Ensure all required fields are provided
             if not all([owner_id, car_id, latitude, longitude]):
                 return JsonResponse({"status": "error", "message": "Missing required fields"})
 
             # Find the owner and car instances
-            try:
-                owner = Owners.objects.get(id=owner_id)
-                car = Cars.objects.get(id=car_id)
-            except Owners.DoesNotExist:
-                return JsonResponse({"status": "error", "message": "Owner not found"})
-            except Cars.DoesNotExist:
-                return JsonResponse({"status": "error", "message": "Car not found"})
+            owner = Owners.objects.get(id=owner_id)
+            car = Cars.objects.get(id=car_id)
 
             # Create the CarboxDetail instance, using the current time if timestamp is not provided
             carbox_detail = CarboxDetail(
@@ -408,25 +401,29 @@ def receive_carbox_detail_data(request):
                 car=car,
                 latitude=latitude,
                 longitude=longitude,
-                timestamp=parse_datetime(timestamp) if timestamp else timezone.now(),
+                timestamp=parse_datetime(timestamp) if timestamp else None,  # Use None if timestamp is missing
                 left_indicator_status=left_indicator_status,
                 right_indicator_status=right_indicator_status,
                 alcohol_detected=alcohol_detected,
                 vibration=vibration,
                 headlight_status=headlight_status,
                 hazard_status=hazard_status,
-                speed=float(speed)  # Convert speed to float
+                speed=speed  # Save the speed
             )
             carbox_detail.save()
 
             return JsonResponse({"status": "success", "message": "Carbox detail data saved successfully"})
+        except Owners.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Owner not found"})
+        except Cars.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Car not found"})
         except json.JSONDecodeError:
             return JsonResponse({"status": "error", "message": "Invalid JSON data"})
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)})
     else:
         return JsonResponse({"status": "error", "message": "Invalid request method"})
-    
+
 
 @csrf_exempt
 def check_email_exist(request):

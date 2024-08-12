@@ -377,7 +377,7 @@ def receive_carbox_detail_data(request):
             car_id = request.GET.get('car_id')
             latitude = request.GET.get('latitude')
             longitude = request.GET.get('longitude')
-            timestamp = request.GET.get('timestamp', None)
+            timestamp = request.GET.get('timestamp', None)  # Use None if not provided
             left_indicator_status = request.GET.get('left_indicator_status', '0') == '1'
             right_indicator_status = request.GET.get('right_indicator_status', '0') == '1'
             alcohol_detected = request.GET.get('alcohol_detected', '0') == '1'
@@ -400,7 +400,7 @@ def receive_carbox_detail_data(request):
                 car=car,
                 latitude=float(latitude),
                 longitude=float(longitude),
-                timestamp=parse_datetime(timestamp) if timestamp else None,
+                timestamp=parse_datetime(timestamp) if timestamp else None,  # Set to None if timestamp is missing
                 left_indicator_status=left_indicator_status,
                 right_indicator_status=right_indicator_status,
                 alcohol_detected=alcohol_detected,
@@ -420,9 +420,6 @@ def receive_carbox_detail_data(request):
             return JsonResponse({"status": "error", "message": str(e)})
     else:
         return JsonResponse({"status": "error", "message": "Invalid request method"})
-
-
-
 @csrf_exempt
 def check_email_exist(request):
     email = request.POST.get("email")

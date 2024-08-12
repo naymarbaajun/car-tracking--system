@@ -371,21 +371,20 @@ def delete_carbox_detail(request, carbox_detail_id):
 
 @csrf_exempt
 def receive_carbox_detail_data(request):
-    if request.method == "POST":
+    if request.method == "GET":
         try:
-            data = json.loads(request.body)  # Parse JSON data from the request body
-            owner_id = data.get('owner_id')
-            car_id = data.get('car_id')
-            latitude = data.get('latitude')
-            longitude = data.get('longitude')
-            timestamp = data.get('timestamp', None)  # Default to None if not provided
-            left_indicator_status = data.get('left_indicator_status', False)
-            right_indicator_status = data.get('right_indicator_status', False)
-            alcohol_detected = data.get('alcohol_detected', False)
-            vibration = data.get('vibration', False)
-            headlight_status = data.get('headlight_status', False)
-            hazard_status = data.get('hazard_status', False)
-            speed = data.get('speed', 0.0)  # Add default value for speed
+            owner_id = request.GET.get('owner_id')
+            car_id = request.GET.get('car_id')
+            latitude = request.GET.get('latitude')
+            longitude = request.GET.get('longitude')
+            timestamp = request.GET.get('timestamp', None)
+            left_indicator_status = request.GET.get('left_indicator_status', '0') == '1'
+            right_indicator_status = request.GET.get('right_indicator_status', '0') == '1'
+            alcohol_detected = request.GET.get('alcohol_detected', '0') == '1'
+            vibration = request.GET.get('vibration', '0') == '1'
+            headlight_status = request.GET.get('headlight_status', '0') == '1'
+            hazard_status = request.GET.get('hazard_status', '0') == '1'
+            speed = float(request.GET.get('speed', '0.0'))
 
             # Ensure all required fields are provided
             if not all([owner_id, car_id, latitude, longitude]):
@@ -395,20 +394,20 @@ def receive_carbox_detail_data(request):
             owner = Owners.objects.get(id=owner_id)
             car = Cars.objects.get(id=car_id)
 
-            # Create the CarboxDetail instance, using the current time if timestamp is not provided
+            # Create the CarboxDetail instance
             carbox_detail = CarboxDetail(
                 owner=owner,
                 car=car,
-                latitude=latitude,
-                longitude=longitude,
-                timestamp=parse_datetime(timestamp) if timestamp else None,  # Use None if timestamp is missing
+                latitude=float(latitude),
+                longitude=float(longitude),
+                timestamp=parse_datetime(timestamp) if timestamp else None,
                 left_indicator_status=left_indicator_status,
                 right_indicator_status=right_indicator_status,
                 alcohol_detected=alcohol_detected,
                 vibration=vibration,
                 headlight_status=headlight_status,
                 hazard_status=hazard_status,
-                speed=speed  # Save the speed
+                speed=speed
             )
             carbox_detail.save()
 
@@ -417,12 +416,11 @@ def receive_carbox_detail_data(request):
             return JsonResponse({"status": "error", "message": "Owner not found"})
         except Cars.DoesNotExist:
             return JsonResponse({"status": "error", "message": "Car not found"})
-        except json.JSONDecodeError:
-            return JsonResponse({"status": "error", "message": "Invalid JSON data"})
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)})
     else:
         return JsonResponse({"status": "error", "message": "Invalid request method"})
+
 
 
 @csrf_exempt

@@ -337,15 +337,14 @@ def edit_carbox_detail_save(request):
 
 
 def delete_carbox_detail(request, carbox_detail_id):
-    carbox_detail = CarboxDetail.objects.get(id=carbox_detail_id)
     try:
+        carbox_detail = get_object_or_404(CarboxDetail, id=carbox_detail_id)
         carbox_detail.delete()
         messages.success(request, "Carbox Detail Deleted Successfully.")
-        return redirect('manage_carbox_detail')
-    except:
-        messages.error(request, "Failed to Delete Carbox Detail.")
-        return redirect('manage_carbox_detail')
+    except Exception as e:
+        messages.error(request, f"Failed to Delete Carbox Detail: {str(e)}")
     
+    return redirect('manage_carbox_detail')
 
 
 

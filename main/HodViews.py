@@ -11,11 +11,11 @@ from .forms import AddOwnerForm, EditOwnerForm
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from django.contrib.auth import get_user_model 
+from django.contrib.auth.decorators import login_required 
 
 
 
-
-
+@login_required 
 def admin_home(request):
     # Counting objects
     all_owner_count = Owners.objects.all().count()
